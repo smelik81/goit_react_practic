@@ -1,0 +1,25 @@
+.container {
+  width: 300px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.userblock {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.userblock input {
+  width: 150px;
+}
+.roleblock {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.roleblock select {
+  width: 157px;
+}
