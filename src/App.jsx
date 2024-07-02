@@ -1,7 +1,8 @@
-/* import { useState } from "react"; */
+import { useEffect, useState } from "react";
+import { getArticlesApi } from "./api/fetch-api";
 
-import { useState } from "react";
 import "./App.css";
+import SearchArticlesForm from "./componens/SearchArticlesForm/SearchArticlesForm";
 /* import Checkbox from "./componens/Checknox/Checkbox"; */
 /* import RadioButton from "./componens/Radio/Radio"; */
 /* import Identifikator from "./componens/Identifikator/Identifikator"; */
@@ -61,7 +62,7 @@ function App() {
   /* const [cofeeSize, setCofeeSize] = useState("sm");*/
   /* const [checkbox, setcheckbox] = useState(false); */
 
-  const [values, setValues] = useState({
+  /*  const [values, setValues] = useState({
     login: "",
     password: "",
   });
@@ -81,33 +82,66 @@ function App() {
       login: "",
       password: "",
     });
+  }; */
+
+  const [articles, setArticles] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState("");
+
+  const handleSearchSubmit = async (searchQuery) => {
+    setQuery(searchQuery);
+    setArticles([]);
+    setPage(1);
   };
+
+  const handleLoadMore = () => {
+    setPage(page + 1);
+  };
+
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setError(false);
+        setIsLoading(true);
+        const data = await getArticlesApi(query, page);
+        setArticles((prev) => [...prev, ...data.hits]);
+      } catch (e) {
+        setError(true);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    query && fetchArticles();
+  }, [query, page]);
 
   return (
     <>
-      {/* <h1>Please enter your information</h1>
-      <LoginForm onLogin={handleLogin} /> */}
-      {/* <SearchBar /> */}
-      {/*  <Identifikator onAdd={addUser} />
-      <Identifikator onAdd={addUser} /> */}
-      {/*  <RadioButton value={cofeeSize} onChange={setCofeeSize} /> */}
-      {/* <Checkbox value={checkbox} onChange={setcheckbox} /> */}
-
-      <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="login"
-          value={values.login}
-          onChange={handleChange}
-        />
-        <input
-          type="password"
-          name="password"
-          value={values.password}
-          onChange={handleChange}
-        />
-        <button type="submit">Login</button>
-      </form>
+      <h1>Latest articles</h1>
+      <SearchArticlesForm submit={handleSearchSubmit} />
+      {isLoading && (
+        <p>
+          <span>Loading...</span>
+        </p>
+      )}
+      {error && (
+        <p>
+          <span>Opps! Please try again...</span>
+        </p>
+      )}
+      {articles.length > 0 && (
+        <ul>
+          {articles.map(({ objectID, url, title }) => (
+            <li key={objectID}>
+              <a href={url}>{title}</a>
+            </li>
+          ))}
+        </ul>
+      )}
+      {articles.length > 0 && (
+        <button onClick={handleLoadMore}>Load more</button>
+      )}
     </>
   );
 }
