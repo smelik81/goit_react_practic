@@ -3,6 +3,7 @@ import { getArticlesApi } from "./api/fetch-api";
 
 import "./App.css";
 import SearchArticlesForm from "./componens/SearchArticlesForm/SearchArticlesForm";
+import Balance from "./componens/Balance";
 /* import Checkbox from "./componens/Checknox/Checkbox"; */
 /* import RadioButton from "./componens/Radio/Radio"; */
 /* import Identifikator from "./componens/Identifikator/Identifikator"; */
@@ -118,6 +119,11 @@ function App() {
 
   return (
     <>
+      <div>
+        <p>Practic with REDUX</p>
+        <hr />
+        <Balance />
+      </div>
       <h1>Latest articles</h1>
       <SearchArticlesForm submit={handleSearchSubmit} />
       {isLoading && (
